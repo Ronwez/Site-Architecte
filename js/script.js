@@ -1,16 +1,16 @@
 //----------------------------------------------------------------
-//**************** Fetch data from Swagger ******************
+//**************** récupération des données  ******************
 //----------------------------------------------------------------
-let data = [];   // Array to store the fetched data
+let data = [];   // tableau contenant les élémenbts de la galerie
 const gallery = document.querySelector('.gallery');
 const filters = document.querySelector('.filterButtons');
 
-async function fetchData() {   // fetch data asynchronously from the Swagger API endpoint
+async function fetchData() {   // on récupère les données du serveur via l'API
   try {
-    const response = await fetch('http://localhost:5678/api/works');   // Make a GET request to the Swagger API endpoint
-    data = await response.json();   // Convert the response to JSON & store in the array
-    dataFetched(data);   // Display the gallery with all elements
-    dataFetchedModal(data);   // Display the modal with all elements
+    const response = await fetch('http://localhost:5678/api/works');   // requête pour obtenir les travaux de l'architect
+    data = await response.json();   // réception des travaux sous formats json et transcription dans le tableau "data"
+    dataFetched(data);   // on lie le tableau des différents travaux à une fonction pour l'afficher dans la galerie de la page d'accueil
+    dataFetchedModal(data);   // pareil mais pour la galerie de la modal
   } catch (error) {
     console.error('Error:', error);
   }
@@ -20,18 +20,18 @@ async function fetchData() {   // fetch data asynchronously from the Swagger API
 //**************** Button 'Tous' ******************
 //----------------------------------------------------------------
 document.querySelector('.btnAllItems').addEventListener('click', () => {
-  dataFetched(data);   // Display all items in the gallery
+  dataFetched(data);   // affiche tous les éléments de la galerie 
 });
 
 //----------------------------------------------------------------
 //******************** Filter buttons *******************
 //----------------------------------------------------------------
-function filterItemsByCategory(category) {   // Filter items by category
-  dataFetched(data.filter(item => item.category.name === category));   // Filter items based on the specified category
+function filterItemsByCategory(category) {   // filtre les différents travaux par catégorie
+  dataFetched(data.filter(item => item.category.name === category));   // demande de filtre en fonciton d'une catégorie spécifique
 }
 
 document.getElementById("btnObjets").addEventListener("click", () => {
-  filterItemsByCategory("Objets");   // Filter items by "Objets" category
+  filterItemsByCategory("Objets");   // la catégorie spécifique ici, est "objets"
 });
 
 document.getElementById("btnAppartements").addEventListener("click", () => {
@@ -43,17 +43,17 @@ document.getElementById("btnHotelsRestaurants").addEventListener("click", () => 
 });
 
 //----------------------------------------------------------------
-//**************** Display all items in gallery ******************
+//**************** Affichage des éléments dans la galerie ******************
 //----------------------------------------------------------------
-function dataFetched(data) {   // Function to display the fetched data in the gallery
-  gallery.innerHTML = '';   // Clear the gallery
-  data.forEach(item => {   // Iterate over each item in the data array
+function dataFetched(data) {   // Fonction qui intègre le tableau data à la galerie
+  gallery.innerHTML = '';   // suppression de ce qu'on à dans la gallerie
+  data.forEach(item => {   // constrcutyion des éléments dans la gallerie pour chaque item/"travaux"
     const figure = document.createElement('figure');
     const img = document.createElement('img');
     const figcaption = document.createElement('figcaption');
 
-    img.src = item.imageUrl;   // Set the image source to the item's imageUrl
-    figcaption.textContent = item.title;   // Set the figcaption text to the item's title
+    img.src = item.imageUrl;   // on définit la source de l'image par son url
+    figcaption.textContent = item.title;   // le texte dans "figcaption" est défini comme le titre de l'item
 
     figure.appendChild(img);
     figure.appendChild(figcaption);
@@ -69,12 +69,12 @@ document.getElementById('logout').addEventListener('click', () => {
 });
 
 (async () => {   
-  if (localStorage.getItem('token')) {   // Check if a token is stored in the local storage
-        // If a token exists, hide the login and filterButtons elements
+  if (localStorage.getItem('token')) {   // vérification de si on a le token de connexion 
+        // Si on a le token, alors on supprime des éléments du html 
     document.getElementById('login').style.display = 'none';
     document.querySelector('.filterButtons').style.display = 'none';
   } else {
-      // If no token exists, hide other elements
+      // Si on a pas de token, alors les élémnets qui montrent la connexion, osnt supprimés
     document.querySelector('.headerBar').style.display = 'none';
     document.querySelector('.positionFigcaption').style.display = 'none';
     document.querySelector('.position').style.display = 'none';

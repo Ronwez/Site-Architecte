@@ -223,7 +223,7 @@ nav li a {
 	cursor: pointer;
 }
 
-.btn:hover{
+.btn:focus{
 	color: #FFFFFF;
 }
 
@@ -242,7 +242,7 @@ nav li a {
 	transition: opacity 250ms ease-out;
 }
 
-.btn:hover::after{
+.btn:focus::after{
 	opacity: 1;
 }
 
@@ -631,4 +631,12 @@ input[type="file"] {     /* Hide the default file input */
 	box-shadow: 12px 9px 18px -5px rgba(0,0,0,0.56);
 	border-radius: 10px;
 	color:red;
+}
+
+.iconArrow{
+	display: none;
+}
+
+.figure:hover .iconArrow{
+	display:block;
 }

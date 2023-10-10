@@ -1,82 +1,83 @@
 //----------------------------------------------------------------
 //*************************** Modal ******************************
 //----------------------------------------------------------------
-const modalGallery = document.querySelector('.modalGallery');
-const token = localStorage.getItem('token');   // Retrieve the token from localStorage
-const modalBtn = document.getElementById('modalBtn');
-const chosenImgBlock = document.querySelector('.chosenImgBlock');
-const modalSupp = document.querySelector('.modalSupp');
-const modalTitle = document.querySelector('.modalTitle');
-const addItemForm = document.getElementById('addItemForm');
-const uploadButton = document.getElementById('uploadButton');
-const photoInput = document.getElementById('photoInput');
-const formPhoto = document.querySelector('.formPhoto');
-const titleInput = document.getElementById('titleInput');
-const formData = document.querySelector('.formData');
-const modalMessage = document.getElementById('modalMessage');
+const modalGallery = document.querySelector('.modalGallery'); //galerie de la modal
+const token = localStorage.getItem('token');   // Token stocké dans le localstorage
+const modalAddpic = document.getElementById('modalAddpic'); // ouvrir la seconde modal
+const chosenImgBlock = document.querySelector('.chosenImgBlock'); // prévisualisation d'une image
+const modalSupp = document.querySelector('.modalSupp'); // supprimer toute les images
+const modalTitle = document.querySelector('.modalTitle'); // titre de la modal
+const addItemForm = document.getElementById('addItemForm'); // formulaire ajout d'image + info du fichier à mettre
+const uploadButton = document.getElementById('uploadButton'); // bouton d'envoie d'image
+const photoInput = document.getElementById('photoInput'); // ajouter un fichier image
+const formPhoto = document.querySelector('.formPhoto'); // formulaire d'ajout d'image
+const titleInput = document.getElementById('titleInput'); // titre du nouvel élément
+const formData = document.querySelector('.formData'); // formulaire ajout d'image
+const modalMessage = document.getElementById('modalMessage'); // message si le formulaire n'est pas correctement rempli
 
-// Toggle the visibility of the modal when one of the element of modalTriggers is clicked
+// Quand on clique sur modifier, toggle, ajoute la catégorie "active" (CSS) à la div qui définie la modal pour l'afficher
 document.querySelectorAll('.modalTrigger').forEach(trigger => trigger.addEventListener('click', () => {   
   document.querySelector('.modalContainer').classList.toggle('active');
   resetForm()
 }));
 
 //----------------------------------------------------------------
-//***************** Display data in the modal gallery ************
+//***************** Affichage du tableau "data" dans la galerie de la modal ************
 //----------------------------------------------------------------
 function dataFetchedModal(data) {   
   modalGallery.innerHTML = '';
 
-  data.forEach((item, index) => {
+  data.forEach((item, index) => { // pour chaqued éléments du tableau, on crée une "carte" dans la galerie
     const figure = document.createElement('figure');
     const img = document.createElement('img');
     const figcaption = document.createElement('figcaption');
 
     figure.classList.add('figure');
-    img.src = item.imageUrl;   // Set the image source to the item's imageUrl
+    img.src = item.imageUrl;   // la source de l'image est définit par son url
     figcaption.textContent = 'éditer';
 
-    if (index === 0) {
-      const iconArrow = document.createElement('i');
-      iconArrow.classList.add('fa-solid', 'fa-arrows-up-down-left-right', 'iconArrow');
-      iconArrow.setAttribute('aria-hidden', 'true');
-      figure.appendChild(iconArrow);
-    }
+
+    const iconArrow = document.createElement('i');
+    iconArrow.classList.add('fa-solid', 'fa-arrows-up-down-left-right', 'iconArrow');
+    iconArrow.setAttribute('aria-hidden', 'true');
+    
+
     
     const iconTrash = document.createElement('i');
     iconTrash.classList.add('fa-solid', 'fa-trash-can', 'iconTrash');
     iconTrash.setAttribute('aria-hidden', 'true');
     iconTrash.addEventListener('click', (e) => {
       e.preventDefault();
-      deleteItem(e, item.id); // Call the deleteItem function passing the item ID
-      figure.remove(); // Remove the figure element from the DOM
+      deleteItem(e, item.id); // Appelle la fonction de suppression d'élément quand on clique sur la corbeille
+      figure.remove(); // Retire l'élément du DOM
     });
 
+    figure.appendChild(iconArrow);
     figure.appendChild(iconTrash);
     figure.appendChild(img);
     figure.appendChild(figcaption);
-
+    
     modalGallery.appendChild(figure);
   });
 }
 
 //----------------------------------------------------------------
-//******************** Delete items in the modal *****************
+//******************** Supprimer un élément de la modal *****************
 //----------------------------------------------------------------
 async function deleteItem(e, itemId) {
   e.preventDefault();
   try {
-    const response = await fetch(`http://localhost:5678/api/works/${itemId}`, {   // Make a DELETE request to the Swagger API to delete the item
+    const response = await fetch(`http://localhost:5678/api/works/${itemId}`, {   // Requête DELETE à l'API en se absant sur l'id de l'item sélectionné
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`,   // Include the token in the Authorization header
+        'Authorization': `Bearer ${token}`,   // pour supprimer un élément on utilise le token comme droit d'utilisation
       }
     });
 
     if (response.ok) {
       console.log('Item deleted successfully');
-      data = data.filter((item) => item.id !== itemId);   // Remove the deleted item from the data array
-      // Update the gallery and modalGallery with the updated data
+      data = data.filter((item) => item.id !== itemId);   // dans le tableau data, on filtre l'élément qu'on veut supprimer en séléectionnant son id 
+      // Mise à jour des galeries de la page d'acceuil et de la modal
       dataFetched(data);
       dataFetchedModal(data);
     } else {
@@ -88,13 +89,13 @@ async function deleteItem(e, itemId) {
 }
 
 //-----------------------------------------------------------------
-//******* Modify modal appearance, when click on modalBtn *********
+//******* Modification de l'apparence de la modal quand on clique sur 'Ajouter Photo' *********
 //-----------------------------------------------------------------
-modalBtn.addEventListener('click', () => {
+modalAddpic.addEventListener('click', () => {
   addItemForm.style.display = 'block';
   modalTitle.textContent = 'Ajout photo';
   modalGallery.classList.add('hidden');
-  modalBtn.style.display = 'none';
+  modalAddpic.style.display = 'none';
   uploadButton.style.display = 'block';
   modalSupp.style.display = 'none';
   chosenImgBlock.style.display = 'none';
@@ -102,33 +103,33 @@ modalBtn.addEventListener('click', () => {
 
 
 //--------------------------------------------------------------------
-//*** Modify appearance of modal, when click on arrow back icon ******
+//*** Retour à l'apparence initial de la modal quand on clique sur la flèche gauche ******
 //--------------------------------------------------------------------
 document.querySelector('.fa-arrow-left').addEventListener('click', () => {
   resetForm();
 });
 
 //--------------------------------------------------------------------
-//************************* Add new item *****************************
+//************************* Ajouter un item *****************************
 //--------------------------------------------------------------------
 uploadButton.addEventListener('click', async (e) => {
-  e.preventDefault();   // Prevent the default form submission
+  e.preventDefault();   
 
-  // Check if the required form fields are filled
+  // Vérification que tous les éléments du formulaires sont remplis
   if (titleInput.value.trim() === '' || photoInput.files.length === 0 || categorySelect.value === '') {
-    modalErrorMessage('Remplissez les champs'); // Display error message
-    return; // Exit the function to prevent form submission
+    modalErrorMessage('Remplissez les champs'); // si le formulaire est vide, on a un message d'erreur via la fonction "modalErrorMessage"
+    return; // arrêt de la fonction pour pouvoir envoyer de nouveau le formulaire
   } else {
-    modalMessage.style.display = 'none';
+    modalMessage.style.display = 'none'; //si le formulaire est rempli, pas de message d'erreur
   }
 
-  const formData = new FormData();   // Create a FormData object to store the form data
-  formData.append('image', photoInput.files[0]);   // Get the selected file from the file input
+  const formData = new FormData();   // création de l'objet formdata pour collecter les nouvelles données de l'lément qu'on veut ajouter
+  formData.append('image', photoInput.files[0]);   // on recupère le fichier qu'on a sélectionné pour notre nouvel élément de galerie
   formData.append('title', titleInput.value);
   formData.append('category', categorySelect.value);
 
   try {
-    const response = await fetch('http://localhost:5678/api/works', {   // Make a POST request
+    const response = await fetch('http://localhost:5678/api/works', {   
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -152,22 +153,22 @@ uploadButton.addEventListener('click', async (e) => {
 });
 
 //------------------------------------------------------------------
-//************* display chosen image in formPhoto ******************
+//************* affichage de l'image choisie dans le fomulaire ******************
 //------------------------------------------------------------------
 photoInput.addEventListener('change', () => {
   const file = photoInput.files[0];
 
-  if (file) {   // Check if a file is selected
+  if (file) {   // vérification de si un fichier à été sélectionné
     chosenImgBlock.style.display = 'block';
     const chosenImg = document.createElement('img');
     chosenImg.classList.add('chosenImg');
-    chosenImg.src = URL.createObjectURL(file);   // Set the source of the image to a temporary URL for the selected file
+    chosenImg.src = URL.createObjectURL(file);   // on donne à l'image une url temporaire pour pouvoir lui donner une source
     chosenImgBlock.appendChild(chosenImg);
   } 
 });
 
 //-------------------------------------------------------------------
-//************************* Reset modal form ************************
+//************************* Réinitialisation du formulaire de la modal ************************
 //-------------------------------------------------------------------
 function resetForm() {
   addItemForm.reset();
@@ -178,13 +179,13 @@ function resetForm() {
   addItemForm.style.display = 'none';
   modalTitle.textContent = 'Galerie photo';
   modalGallery.classList.remove('hidden');
-  modalBtn.style.display = 'block';
+  modalAddpic.style.display = 'block';
   uploadButton.style.display = 'none';
   modalSupp.style.display = 'block';
 }
 
 //-------------------------------------------------------------------
-//*********** Alert a user if the modal form is not filled **********
+//*********** Alerte si le formulaire de la modal n'est pas rempli **********
 //-------------------------------------------------------------------
 function modalErrorMessage() {    
   modalMessage.classList.add('modalMessage');
