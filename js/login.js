@@ -2,7 +2,7 @@
 //*************************** Login ******************************
 //----------------------------------------------------------------
 document.getElementById('loginForm').addEventListener('submit', async (e) => { //"e" désigne l'évènnement
-  e.preventDefault();   // évite d'avoir une erreur 
+  e.preventDefault();   // évite d'avoir une erreur en rechargeant la page pa exemple
  
   const { email, password } = e.target.elements; 
   const data = { email: email.value, password: password.value }; //data = valeurs inscrites dans email et mot de passe

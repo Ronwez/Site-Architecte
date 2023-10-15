@@ -121,6 +121,7 @@ uploadButton.addEventListener('click', async (e) => {
     return; // arrêt de la fonction pour pouvoir envoyer de nouveau le formulaire
   } else {
     modalMessage.style.display = 'none'; //si le formulaire est rempli, pas de message d'erreur
+
   }
 
   const formData = new FormData();   // création de l'objet formdata pour collecter les nouvelles données de l'lément qu'on veut ajouter

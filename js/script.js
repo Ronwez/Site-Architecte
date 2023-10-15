@@ -1,7 +1,7 @@
 //----------------------------------------------------------------
 //**************** récupération des données  ******************
 //----------------------------------------------------------------
-let data = [];   // tableau contenant les élémenbts de la galerie
+let data = [];   // tableau contenant les éléments de la galerie
 const gallery = document.querySelector('.gallery');
 const filters = document.querySelector('.filterButtons');
 
